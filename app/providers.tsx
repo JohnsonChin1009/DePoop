@@ -1,25 +1,36 @@
 'use client';
 
 import { PrivyProvider } from '@privy-io/react-auth';
+import { ThemeProvider } from 'next-themes';
+
+// import type { User } from '@privy-io/react-auth';
+
+// const handleLogin = (user: User) => {
+//   console.log(`User ${user.id} logged in!`);
+// };
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <PrivyProvider
-      appId={String(process.env.NEXT_PUBLIC_PRIVY_APP_ID)}
-      config={{
-        // Customize Privy's appearance in your app
-        appearance: {
-          theme: 'light',
-          accentColor: '#676FFF',
-          logo: '/icon-512x512.png',
-        },
-        // Create embedded wallets for users who don't have a wallet
-        embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
-        },
-      }}
+    <ThemeProvider 
+      attribute="class" 
+      defaultTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
     >
-      {children}
-    </PrivyProvider>
+      <PrivyProvider
+        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
+        // onLogin={handleLogin}
+        config={{
+          loginMethods: ['email', 'wallet'],
+          appearance: {
+            theme: 'light',
+            accentColor: '#F59E0B',
+            showWalletLoginFirst: true,
+          },
+        }}
+      >
+        {children}
+      </PrivyProvider>
+    </ThemeProvider>
   );
 }

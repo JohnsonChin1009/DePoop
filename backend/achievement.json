@@ -1,0 +1,10 @@
+{
+    "name": "Achievement Unlocked: Web3 Master",
+    "description": "Awarded to users who completed the Web3 learning track.",
+    "image": "ipfs://bafkreiegwghlx7jkx2chbfdbdwgmr2lemdaznmljpevdlfcejzxmhgcjd4",
+    "attributes": [
+      { "trait_type": "Level", "value": "Master" },
+      { "trait_type": "Achievement", "value": "Web3 Completion" }
+    ]
+  }
+  
