@@ -1,5 +1,7 @@
 # DePoop 💩🚀
 
+![DePoop Logo](/public/depoop-logo-big.png)
+
 ## About The Project
 
 DePoop is a revolutionary dApp that tracks poop data while rewarding users with native tokens for logging their poops. It promotes both fun and hygiene awareness by allowing users to track their poop locations and contribute to a public map that highlights available poop-friendly spots.
