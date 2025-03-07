@@ -13,7 +13,7 @@ const config = {
     artifacts: './artifacts', // Path to artifacts directory
   },
   networks: {
-    sepolia: {
+   scrollSepolia: {
       url: process.env.SEPOLIA_URL,
       accounts: [process.env.PRIVATE_KEY],
     },

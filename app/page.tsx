@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import ThemeToggle from './components/ThemeToggle';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 dark:from-zinc-900 dark:to-zinc-800">
