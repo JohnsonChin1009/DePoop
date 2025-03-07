@@ -43,7 +43,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
             id: 42,
             timestamp: new Date('2024-03-10T08:30:00'),
             notes: "Morning victory! 🌅",
-            location: { latitude: 40.7128, longitude: -74.0060 },
+            location: { latitude: 3.043626, longitude: 101.584689 },
             status: 'confirmed'
           },
           {

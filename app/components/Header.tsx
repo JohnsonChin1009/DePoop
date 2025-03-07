@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { motion } from 'framer-motion';
-import ThemeToggle from './ThemeToggle';
 import { FaSignOutAlt } from 'react-icons/fa';
 import LogModal from './LogModal';
 
@@ -21,7 +20,7 @@ export default function Header() {
       <header className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800">
         <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-amber-600">
-            ShitTracker
+            ShitMap
           </Link>
 
           <div className="flex items-center gap-4">
@@ -50,8 +49,6 @@ export default function Header() {
                 <FaSignOutAlt size={20} />
               </motion.button>
             </div>
-
-            <ThemeToggle />
           </div>
         </nav>
       </header>

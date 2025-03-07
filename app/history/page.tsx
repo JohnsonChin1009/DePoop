@@ -7,6 +7,7 @@ import { FaMapMarkerAlt, FaSort, FaFilter, FaArrowLeft } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import Header from '../components/Header';
 import { useLogs } from '../contexts/LogContext';
+import ShitMap from '../components/ShitMap';
 
 // type ShitLog = {
 //   id: number;
@@ -54,6 +55,9 @@ export default function History() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-12">
+        <div className="mb-8">
+          <ShitMap />
+        </div>
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <motion.button

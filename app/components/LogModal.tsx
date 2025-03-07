@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import Modal from './ui/Modal';
+import { useLogs } from '../contexts/LogContext';
 
 type LogModalProps = {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
   const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addLog } = useLogs();
 
   const handleLocationToggle = async () => {
     if (!useLocation) {
@@ -42,8 +44,24 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
     setError(null);
 
     try {
-      // TODO: Implement blockchain transaction
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated delay
+      // Create the log data
+      const logData = {
+        timestamp: new Date(),
+        notes: notes.trim() || undefined,
+        location: useLocation && location ? {
+          latitude: location.latitude,
+          longitude: location.longitude
+        } : undefined
+      };
+
+      // Add the log using our context
+      await addLog(logData);
+      
+      // Reset form
+      setNotes('');
+      setLocation(null);
+      setUseLocation(false);
+      
       onClose();
       // TODO: Show success toast
     } catch (error: unknown) {
