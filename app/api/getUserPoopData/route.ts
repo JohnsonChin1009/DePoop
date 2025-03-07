@@ -1,6 +1,16 @@
 import { gql, request } from 'graphql-request';
 import { NextRequest, NextResponse } from 'next/server';
 
+type PoopEventResponse = {
+  poopEventLoggeds: {
+    user: string;
+    latitude: number;
+    longitude: number;
+    sessionDuration: number;
+    timestamp: string;
+  }[];
+};
+
 export async function POST(req: NextRequest) {
   const query = gql`
     {
@@ -14,8 +24,7 @@ export async function POST(req: NextRequest) {
     }
   `;
 
-  const url =
-    'https://api.studio.thegraph.com/query/106200/depoop/version/latest';
+  const url = process.env.NEXT_PUBLIC_SUBGRAPH_URL as string;
 
   try {
     const data = await req.json();
@@ -24,7 +33,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Invalid Address' }, { status: 400 });
     }
 
-    const response = await request(url, query);
+    const response: PoopEventResponse = await request(url, query);
 
     // Filter events where user matches the provided address
     const filteredEvents = response.poopEventLoggeds.filter(
