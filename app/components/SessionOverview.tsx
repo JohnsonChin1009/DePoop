@@ -120,11 +120,6 @@ export default function SessionOverview() {
                         </span>
                       )}
                     </p>
-                    {log.notes && (
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-1">
-                        {log.notes}
-                      </p>
-                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-zinc-500">{formatDate(log.timestamp)}</p>
