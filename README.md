@@ -1,41 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DePoop 💩🚀
 
-## Getting Started
+## About The Project
 
-First, run the development server:
+DePoop is a revolutionary dApp that tracks poop data while rewarding users with native tokens for logging their poops. It promotes both fun and hygiene awareness by allowing users to track their poop locations and contribute to a public map that highlights available poop-friendly spots.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How It Works 🔧
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Log Your Poop 💩 – Users submit poop logs through the DePoop app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Verify Location 📍 – The app records the latitude & longitude of the poop.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Earn Rewards 🎉 – Users receive native tokens as incentives.
 
-## Learn More
+Public Contribution 🌍 – Locations with public access can be displayed on a community map to help others find available spots.
 
-To learn more about Next.js, take a look at the following resources:
+## Blockchain & ZK Integration 🔗
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+DePoop leverages on-chain transactions and zero-knowledge proofs (ZK) for private and verifiable logging.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Contract Deployed on Scroll
+### Contract Deployed on Scroll
 
 PoopTracker
 
@@ -49,7 +32,11 @@ ZK
 0x3664fe20a3DD061b8f95C2A9D3b984Ee027c0c6C
 ```
 
-## Subgraph link
+### Subgraph link
+
+```
+https://thegraph.com/studio/subgraph/depoop
+```
 
 ```
 https://testnet.thegraph.com/explorer/subgraphs/G5aVpre6AQcUx5EHbRoccSQZQVdc143GxcPJKP8zX4uS?view=Query&chain=arbitrum-sepolia
