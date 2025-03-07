@@ -125,7 +125,6 @@ export default function ShitMap() {
           <div style=" color: #000;">
             <h3 style="margin: 0 0 8px; font-weight: bold;">Shit #${log.id}</h3>
             <p style="margin: 0 0 4px;">${new Date(log.timestamp).toLocaleString()}</p>
-            ${log.notes ? `<p style="margin: 0;">${log.notes}</p>` : ''}
           </div>
         `
       });
