@@ -116,7 +116,7 @@ export default function SessionOverview() {
 
   return (
     <div className="space-y-4">
-      <div className="grid md:grid-cols-3 gap-6 w-auto">
+      <div className="grid md:grid-cols-3 gap-3 md:gap-6 w-auto">
         <motion.div 
           whileHover={{ scale: 1.02 }}
           className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-lg"
