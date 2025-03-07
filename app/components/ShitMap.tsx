@@ -16,14 +16,8 @@ declare global {
         Marker: typeof google.maps.Marker;
         InfoWindow: typeof google.maps.InfoWindow;
         LatLngBounds: typeof google.maps.LatLngBounds;
-        Point: typeof google.maps.Point;
-        Size: typeof google.maps.Size;
-        Animation: {
-          DROP: number;
-        };
-        event: typeof google.maps.event;
-      };
-    };
+      }
+    }
   }
 }
 
@@ -140,7 +134,6 @@ export default function ShitMap() {
         infoWindows.forEach(iw => iw.close());
         infoWindow.open(mapInstance, marker);
         setActiveMarker(log.id);
-        console.log('marker clicked', activeMarker);
       });
 
       markers.push(marker);
