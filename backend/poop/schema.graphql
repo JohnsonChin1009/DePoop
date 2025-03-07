@@ -1,0 +1,11 @@
+type PoopEventLogged @entity(immutable: true) {
+  id: Bytes!
+  user: Bytes! # address
+  latitude: Int! # int32
+  longitude: Int! # int32
+  timestamp: BigInt! # uint32
+  sessionDuration: Int! # uint16
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

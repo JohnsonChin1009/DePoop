@@ -1,0 +1,67 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "int32",
+        "name": "latitude",
+        "type": "int32"
+      },
+      {
+        "indexed": false,
+        "internalType": "int32",
+        "name": "longitude",
+        "type": "int32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "timestamp",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "sessionDuration",
+        "type": "uint16"
+      }
+    ],
+    "name": "PoopEventLogged",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "int32", "name": "_latitude", "type": "int32" },
+      { "internalType": "int32", "name": "_longitude", "type": "int32" },
+      { "internalType": "uint32", "name": "_timestamp", "type": "uint32" },
+      { "internalType": "uint16", "name": "_sessionDuration", "type": "uint16" }
+    ],
+    "name": "logPoopEvent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "userPoopEvents",
+    "outputs": [
+      { "internalType": "address", "name": "userAddress", "type": "address" },
+      { "internalType": "int32", "name": "latitude", "type": "int32" },
+      { "internalType": "int32", "name": "longitude", "type": "int32" },
+      { "internalType": "uint32", "name": "timestamp", "type": "uint32" },
+      { "internalType": "uint16", "name": "sessionDuration", "type": "uint16" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
