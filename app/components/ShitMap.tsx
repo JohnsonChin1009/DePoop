@@ -45,7 +45,7 @@ export default function ShitMap() {
       googleMapsLoaded = true;
       return;
     }
-
+    console.log(activeMarker);
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
     script.async = true;
