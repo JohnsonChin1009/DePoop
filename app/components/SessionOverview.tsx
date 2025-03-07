@@ -1,12 +1,92 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FaPoop, FaCoins, FaClock, FaHistory, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaPoop, FaCoins, FaClock, FaHistory, FaMapMarkerAlt, FaLink } from 'react-icons/fa';
 import Link from 'next/link';
 import { useLogs } from '../contexts/LogContext';
+import { useEffect, useState } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
+
+type BlockchainLog = {
+  user: string;
+  latitude: number;
+  longitude: number;
+  sessionDuration: number;
+  timestamp: string;
+};
 
 export default function SessionOverview() {
-  const { stats, logs, isLoading } = useLogs();
+  const { logs } = useLogs();
+  const { user } = usePrivy();
+  const [blockchainLogs, setBlockchainLogs] = useState<BlockchainLog[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch blockchain logs
+  useEffect(() => {
+    const fetchBlockchainLogs = async () => {
+      if (!user?.wallet?.address) return;
+      
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/getUserPoopData', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            address: user.wallet.address
+          }),
+        });
+        
+        const data = await response.json();
+        
+        if (data.message && Array.isArray(data.message)) {
+          setBlockchainLogs(data.message);
+        } else {
+          setBlockchainLogs([]);
+        }
+      } catch (error) {
+        console.error('Error fetching blockchain logs:', error);
+        setBlockchainLogs([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlockchainLogs();
+  }, [user?.wallet?.address]);
+
+  // Convert blockchain logs to a format compatible with local logs
+  const formattedBlockchainLogs = blockchainLogs.map((log, index) => ({
+    id: `chain-${index}`,
+    timestamp: new Date(parseInt(log.timestamp) * 1000),
+    location: {
+      latitude: log.latitude / 1000000,
+      longitude: log.longitude / 1000000
+    },
+    status: 'confirmed' as const,
+    duration: log.sessionDuration,
+    isBlockchain: true
+  }));
+
+  // Combine and sort all logs by timestamp (newest first)
+  const allLogs = [...logs, ...formattedBlockchainLogs].sort((a, b) => 
+    b.timestamp.getTime() - a.timestamp.getTime()
+  );
+
+  // Assign sequential IDs
+  const logsWithSequentialIds = allLogs.map((log, index) => ({
+    ...log,
+    sequentialId: allLogs.length - index
+  }));
+
+  // Get the 3 most recent logs
+  const recentLogs = logsWithSequentialIds.slice(0, 3);
+
+  // Calculate stats directly from allLogs
+  const totalShits = allLogs.filter(log => log.status === 'confirmed').length;
+  const tokensEarned = totalShits * 3; // 3 tokens per shit
+  const lastSession = allLogs.find(log => log.status === 'confirmed')?.timestamp;
 
   const formatTimeAgo = (date?: Date) => {
     if (!date) return 'No sessions yet';
@@ -19,11 +99,6 @@ export default function SessionOverview() {
     return `${Math.floor(hours / 24)}d ago`;
   };
 
-  // Get the 3 most recent logs
-  const recentLogs = [...logs]
-    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-    .slice(0, 3);
-
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
@@ -31,6 +106,12 @@ export default function SessionOverview() {
       hour: 'numeric',
       minute: '2-digit'
     }).format(date);
+  };
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}m ${secs}s`;
   };
 
   return (
@@ -47,7 +128,7 @@ export default function SessionOverview() {
             <div>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">Total Shits</p>
               <h3 className="text-2xl font-bold">
-                {isLoading ? '...' : stats.totalShits}
+                {isLoading ? '...' : totalShits}
               </h3>
             </div>
           </div>
@@ -64,7 +145,7 @@ export default function SessionOverview() {
             <div>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">Tokens Earned</p>
               <h3 className="text-2xl font-bold">
-                {isLoading ? '...' : stats.tokensEarned}
+                {isLoading ? '...' : tokensEarned}
               </h3>
             </div>
           </div>
@@ -81,7 +162,7 @@ export default function SessionOverview() {
             <div>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">Latest Session</p>
               <h3 className="text-lg font-bold">
-                {isLoading ? '...' : formatTimeAgo(stats.lastSession)}
+                {isLoading ? '...' : formatTimeAgo(lastSession)}
               </h3>
             </div>
           </div>
@@ -112,14 +193,28 @@ export default function SessionOverview() {
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="font-medium">
-                      Shit #{log.id}
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">
+                        Shit #{log.sequentialId}
+                      </p>
                       {log.status === 'pending' && (
-                        <span className="ml-2 text-xs text-amber-600">
+                        <span className="text-xs text-amber-600">
                           (Pending...)
                         </span>
                       )}
-                    </p>
+                      {'isBlockchain' in log && (
+                        <span className="text-xs text-blue-600 flex items-center gap-1">
+                          <FaLink size={10} />
+                          <span>On-Chain</span>
+                        </span>
+                      )}
+                    </div>
+                    
+                    {('duration' in log && log.duration) && (
+                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                        Duration: {formatDuration(log.duration)}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-zinc-500">{formatDate(log.timestamp)}</p>

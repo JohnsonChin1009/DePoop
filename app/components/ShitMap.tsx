@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLogs } from '../contexts/LogContext';
 import { FaMapMarkerAlt, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { usePrivy } from '@privy-io/react-auth';
 
 // Add this at the top of your file
 declare global {
@@ -21,6 +22,14 @@ declare global {
   }
 }
 
+type BlockchainLog = {
+  user: string;
+  latitude: number;
+  longitude: number;
+  sessionDuration: number;
+  timestamp: string;
+};
+
 // You'll need to get a Google Maps API key
 // https://developers.google.com/maps/documentation/javascript/get-api-key
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY';
@@ -31,11 +40,65 @@ let googleMapsLoaded = false;
 export default function ShitMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const { logs } = useLogs();
+  const { user } = usePrivy();
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeMarker, setActiveMarker] = useState<number | null>(null);
+  const [blockchainLogs, setBlockchainLogs] = useState<BlockchainLog[]>([]);
+  const [isLoadingBlockchain, setIsLoadingBlockchain] = useState(false);
+
+  // Fetch blockchain logs
+  useEffect(() => {
+    const fetchBlockchainLogs = async () => {
+      if (!user?.wallet?.address) return;
+      
+      setIsLoadingBlockchain(true);
+      try {
+        const response = await fetch('/api/getUserPoopData', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            address: user.wallet.address
+          }),
+        });
+        
+        const data = await response.json();
+        
+        if (data.message && Array.isArray(data.message)) {
+          setBlockchainLogs(data.message);
+        } else {
+          setBlockchainLogs([]);
+        }
+      } catch (error) {
+        console.error('Error fetching blockchain logs:', error);
+        setBlockchainLogs([]);
+      } finally {
+        setIsLoadingBlockchain(false);
+      }
+    };
+
+    fetchBlockchainLogs();
+  }, [user?.wallet?.address]);
+
+  // Convert blockchain logs to a format compatible with local logs
+  const formattedBlockchainLogs = blockchainLogs.map((log, index) => ({
+    id: `chain-${index}`,
+    timestamp: new Date(parseInt(log.timestamp) * 1000),
+    location: {
+      latitude: log.latitude / 1000000,
+      longitude: log.longitude / 1000000
+    },
+    status: 'confirmed' as const,
+    duration: log.sessionDuration,
+    isBlockchain: true
+  }));
+
+  // Combine local and blockchain logs
+  const allLogs = [...logs, ...formattedBlockchainLogs];
 
   // Filter logs that have location data
-  const logsWithLocation = logs.filter(log => log.location);
+  const logsWithLocation = allLogs.filter(log => log.location);
 
   // Load Google Maps script only once
   useEffect(() => {
@@ -58,7 +121,7 @@ export default function ShitMap() {
     document.head.appendChild(script);
 
     // No cleanup needed
-  }, []); // Empty dependency array - only run once
+  }, [activeMarker]); // Add activeMarker to dependency array
 
   // Initialize map when script is loaded
   useEffect(() => {
@@ -105,13 +168,15 @@ export default function ShitMap() {
     const infoWindows: google.maps.InfoWindow[] = [];
 
     logsWithLocation.forEach((log) => {
-      const marker = new window.google.maps.Marker({
-        position: { 
-          lat: log.location!.latitude, 
-          lng: log.location!.longitude 
+      if (!log.location) return;
+
+      const marker = new google.maps.Marker({
+        position: {
+          lat: log.location.latitude,
+          lng: log.location.longitude
         },
         map: mapInstance,
-        title: `Shit #${log.id}`,
+        title: `Shit #${typeof log.id === 'string' ? log.id.replace('chain-', '') : log.id}`,
         icon: {
           url: '/depoop-logo-small.png', // Use your custom poop logo
           scaledSize: new google.maps.Size(40, 40), // Adjust size as needed
@@ -120,11 +185,28 @@ export default function ShitMap() {
         animation: google.maps.Animation.DROP
       });
 
+      const formatDate = (date: Date) => {
+        return new Intl.DateTimeFormat('en-US', {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        }).format(date);
+      };
+
+      const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}m ${secs}s`;
+      };
+
       const infoWindow = new window.google.maps.InfoWindow({
         content: `
-          <div style=" color: #000;">
-            <h3 style="margin: 0 0 8px; font-weight: bold;">Shit #${log.id}</h3>
-            <p style="margin: 0 0 4px;">${new Date(log.timestamp).toLocaleString()}</p>
+          <div style="color: #000;">
+            <h3 style="margin: 0 0 8px; font-weight: bold;">Shit #${typeof log.id === 'string' ? log.id.replace('chain-', '') : log.id}</h3>
+            <p style="margin: 0 0 4px;">${formatDate(log.timestamp)}</p>
+            ${('duration' in log && log.duration) ? 
+              `<p style="margin: 0 0 4px;">Duration: ${formatDuration(log.duration)}</p>` : ''}
+            ${('isBlockchain' in log) ? 
+              `<p style="margin: 0; color: #3b82f6;">✓ On-Chain</p>` : ''}
           </div>
         `
       });
@@ -132,7 +214,7 @@ export default function ShitMap() {
       marker.addListener('click', () => {
         infoWindows.forEach(iw => iw.close());
         infoWindow.open(mapInstance, marker);
-        setActiveMarker(log.id);
+        setActiveMarker(typeof log.id === 'string' ? parseInt(log.id.replace('chain-', '')) : log.id);
       });
 
       markers.push(marker);
@@ -156,7 +238,7 @@ export default function ShitMap() {
       // Clean up markers when component unmounts or when dependencies change
       markers.forEach(marker => marker.setMap(null));
     };
-  }, [mapLoaded, logsWithLocation]); // Only re-run when mapLoaded or logsWithLocation changes
+  }, [mapLoaded, logsWithLocation]); // Re-run when mapLoaded or logsWithLocation changes
 
   return (
     <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-lg overflow-hidden">
@@ -167,9 +249,12 @@ export default function ShitMap() {
         </h2>
       </div>
       
-      {!mapLoaded ? (
+      {!mapLoaded || isLoadingBlockchain ? (
         <div className="h-96 flex items-center justify-center">
-          <FaSpinner className="animate-spin text-amber-600 text-2xl" />
+          <div className="flex flex-col items-center">
+            <FaSpinner className="animate-spin text-amber-600 text-2xl mb-2" />
+            <p>{isLoadingBlockchain ? 'Loading blockchain data...' : 'Loading map...'}</p>
+          </div>
         </div>
       ) : (
         <div className="relative">

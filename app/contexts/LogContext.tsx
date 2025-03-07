@@ -21,7 +21,7 @@ type LogContextType = {
     tokensEarned: number;
     lastSession?: Date;
   };
-  isLoading: boolean;
+//   isLoading: boolean;
 };
 
 const LogContext = createContext<LogContextType | null>(null);
@@ -29,12 +29,12 @@ const LogContext = createContext<LogContextType | null>(null);
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const { user } = usePrivy();
   const [logs, setLogs] = useState<ShitLog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+//   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate fetching initial data
   useEffect(() => {
     if (user) {
-      setIsLoading(true);
+    //   setIsLoading(true);
       // TODO: Replace with actual blockchain data fetch
       setTimeout(() => {
         setLogs([
@@ -47,10 +47,11 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
           {
             id: 41,
             timestamp: new Date('2025-03-07T15:45:00'),
+            location: { latitude: 3.147944, longitude: 101.712933 },
             status: 'confirmed'
           },
         ]);
-        setIsLoading(false);
+        // setIsLoading(false);
       }, 1000);
     }
   }, [user]);
@@ -89,7 +90,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LogContext.Provider value={{ logs, addLog, stats, isLoading }}>
+    <LogContext.Provider value={{ logs, addLog, stats }}>
       {children}
     </LogContext.Provider>
   );
