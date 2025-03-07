@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { FaSignOutAlt, FaPoop, FaHome, FaHistory, FaUser } from 'react-icons/fa';
 import LogModal from './LogModal';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Header() {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
@@ -23,8 +24,8 @@ export default function Header() {
       {/* Top Header - Always visible */}
       <header className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-center md:justify-between">
-          <Link href="/" className="text-2xl font-bold text-amber-600">
-            DePoop
+          <Link href="/" className="text-2xl font-bold text-amber-600 flex flex-row items-center ">
+            <Image src="/depoop-logo-big.png" alt="DePoop" width={48} height={48} />DePoop
           </Link>
 
           {/* Desktop Navigation - Hidden on mobile */}

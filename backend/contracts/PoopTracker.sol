@@ -1,37 +1,43 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
+import "./Groth16Verifier.sol";
+
 contract PoopTracker {
     struct PoopEvent {
         address userAddress;
-        int32 latitude;
-        int32 longitude;
-        uint32 timestamp;
-        uint16 sessionDuration;
+        bytes32 cidHash;
     }
 
     event PoopEventLogged(
         address indexed user,
-        int32 latitude,
-        int32 longitude,
-        uint32 timestamp,
-        uint16 sessionDuration
+        bytes32 indexed cidHash
     );
 
     mapping(address => PoopEvent[]) public userPoopEvents;
 
-    function logPoopEvent(
-        int32 _latitude,
-        int32 _longitude,
-        uint32 _timestamp,
-        uint16 _sessionDuration
-    ) external {
-        require(_sessionDuration > 0, "Session duration must be greater than 0");
+    Groth16Verifier public verifierContract;
 
-        userPoopEvents[msg.sender].push(
-            PoopEvent(msg.sender, _latitude, _longitude, _timestamp, _sessionDuration)
+    constructor(address _verifierAddress) {
+        verifierContract = Groth16Verifier(_verifierAddress);
+    }
+
+    function logPoopEvent(
+        bytes32 _cidHash,
+        uint256[2] memory _pA,
+        uint256[2][2] memory _pB,
+        uint256[2] memory _pC,
+        uint256[1] memory _pubSignals
+    ) external {
+        // Verify the proof
+        require (
+            verifierContract.verifyProof(_pA, _pB, _pC, _pubSignals),
+            "Invalid proof"
         );
 
-        emit PoopEventLogged(msg.sender, _latitude, _longitude, _timestamp, _sessionDuration);
+        // Store only userAddress and cidHash
+        userPoopEvents[msg.sender].push(PoopEvent(msg.sender, _cidHash));
+
+        emit PoopEventLogged(msg.sender, _cidHash);
     }
 }
