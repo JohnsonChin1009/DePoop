@@ -123,7 +123,7 @@ export default function History() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-12">
+      <main className="container mx-auto px-4 py-4 md:pt-24 md:pb-12">
         <div className="mb-8">
           <ShitMap />
         </div>
@@ -133,7 +133,7 @@ export default function History() {
               onClick={() => router.push('/dashboard')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-full transition-colors"
+              className="p-2 hidden md:block hover:bg-white dark:hover:bg-zinc-800 rounded-full transition-colors"
               aria-label="Back to Dashboard"
             >
               <FaArrowLeft className="w-6 h-6" />

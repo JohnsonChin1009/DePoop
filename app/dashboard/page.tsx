@@ -68,7 +68,7 @@ export default function Dashboard() {
     <>
       <main className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-12">
+        <main className="container mx-auto px-4 py-4 md:pt-24 md:pb-12">
           <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
           
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
