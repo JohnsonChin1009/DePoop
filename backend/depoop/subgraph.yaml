@@ -8,9 +8,9 @@ dataSources:
     name: PoopTracker
     network: scroll-sepolia
     source:
-      address: "0xde8d9614aFc5880B6d565372250aEF3bbAe3bB94"
+      address: "0xAf6030F8362e9490469054d17AD629AF7F9F63c5"
       abi: PoopTracker
-      startBlock: 8410735
+      startBlock: 8425514
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
