@@ -6,7 +6,7 @@ import { FaMapMarkerAlt, FaSpinner } from 'react-icons/fa';
 import Modal from './ui/Modal';
 import { useLogs } from '../contexts/LogContext';
 import { useWallets } from '@privy-io/react-auth';
-import { ethers } from 'ethers';
+import { label } from 'framer-motion/client';
 
 type LogModalProps = {
   isOpen: boolean;
@@ -21,7 +21,6 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
   const [isTracking, setIsTracking] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const { addLog } = useLogs();
-  const { wallets } = useWallets();
 
   // Get location when modal opens
   useEffect(() => {
@@ -72,60 +71,120 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
     setTimer(0);
     setError(null);
   };
-
-  const uploadToBlockchain = async (latitude: number, longitude: number, timestamp: number, sessionDuration: number) => {
-    setIsUploading(true);
+  
+  const uploadToIPFS = async (latitude: number, longitude: number, timestamp: number, sessionDuration: number) => {
     try {
-      console.log("Wallets Available: ", wallets);
+      const is_inside = 1;
+      const response = await fetch("/api/uploadToIPFS", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ is_inside, latitude, longitude, timestamp, sessionDuration})
+      });
 
-      const userWallet = wallets[0];
-
-      if (!userWallet) {
-        throw new Error("No wallet found");
+      if (!response.ok) {
+        throw new Error("Failed to upload to IPFS");
       }
-      const provider = new ethers.BrowserProvider(await userWallet.getEthereumProvider());
-      const signer = await provider.getSigner();
 
-      const contractAbi = [
-        {
-          "inputs": [
-            { "internalType": "int32", "name": "_latitude", "type": "int32" },
-            { "internalType": "int32", "name": "_longitude", "type": "int32" },
-            { "internalType": "uint32", "name": "_timestamp", "type": "uint32" },
-            { "internalType": "uint16", "name": "_sessionDuration", "type": "uint16" }
-          ],
-          "name": "logPoopEvent",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ];
-  
-      const contractAddress = "0xAf6030F8362e9490469054d17AD629AF7F9F63c5";
-      const contract = new ethers.Contract(contractAddress, contractAbi, signer);
-  
-      // Convert floating point coordinates to integers (multiply by 1,000,000)
-      const latInt = Math.round(latitude * 1000000);
-      const longInt = Math.round(longitude * 1000000);
-      
-      // Convert timestamp to seconds
-      const timestampSeconds = Math.floor(timestamp / 1000);
-      
-      // Session duration in seconds (max 65535 due to uint16)
-      const durationSeconds = Math.min(sessionDuration, 65535);
-  
-      const tx = await contract.logPoopEvent(latInt, longInt, timestampSeconds, durationSeconds);
-      await tx.wait();
-  
-      console.log("Transaction Successful", tx.hash);
-      return tx.hash;
+      const { url } = await response.json();
+      return url;
     } catch (error: unknown) {
-      console.error("Error uploading data to blockchain:", error);
-      throw error;
-    } finally {
-      setIsUploading(false);
+      console.log("Shit just happenned", error);
     }
-  };
+  }
+
+  const generateZkProof = async (cid: string) => {
+    try {
+      const response = await fetch(`/api/getCidContent?cid=${cid}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+
+      if (!response.ok) {
+        console.error("Error getting CID Data from IPFS");
+        return null;
+      }
+
+      const cidData = await response.json();
+      console.log("Cid hash Data: ", cidData);
+      return cidData;
+    } catch (error: unknown) {
+      console.log("Couldn't generate zkProof", error);
+    }
+  }
+  // The start of a revolution
+  // const uploadToBlockchain = async (latitude: number, longitude: number, timestamp: number, sessionDuration: number) => {
+  //   setIsUploading(true);
+  //   try {
+  //     console.log("Wallets Available: ", wallets);
+
+  //     const userWallet = wallets[0];
+
+  //     if (!userWallet) {
+  //       throw new Error("No wallet found");
+  //     }
+  //     const provider = new ethers.BrowserProvider(await userWallet.getEthereumProvider());
+  //     const signer = await provider.getSigner();
+
+  //     const contractAbi = [
+  //       {
+  //         "inputs": [
+  //           { "internalType": "int32", "name": "_latitude", "type": "int32" },
+  //           { "internalType": "int32", "name": "_longitude", "type": "int32" },
+  //           { "internalType": "uint32", "name": "_timestamp", "type": "uint32" },
+  //           { "internalType": "uint16", "name": "_sessionDuration", "type": "uint16" }
+  //         ],
+  //         "name": "logPoopEvent",
+  //         "outputs": [],
+  //         "stateMutability": "nonpayable",
+  //         "type": "function"
+  //       }
+  //     ];
+  
+  //     const contractAddress = "0xAf6030F8362e9490469054d17AD629AF7F9F63c5";
+  //     const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+  
+  //     // Convert floating point coordinates to integers (multiply by 1,000,000)
+  //     const latInt = Math.round(latitude * 1000000);
+  //     const longInt = Math.round(longitude * 1000000);
+      
+  //     // Convert timestamp to seconds
+  //     const timestampSeconds = Math.floor(timestamp / 1000);
+      
+  //     // Session duration in seconds (max 65535 due to uint16)
+  //     const durationSeconds = Math.min(sessionDuration, 65535);
+  
+  //     const tx = await contract.logPoopEvent(latInt, longInt, timestampSeconds, durationSeconds);
+  //     await tx.wait();
+  
+  //     console.log("Transaction Successful", tx.hash);
+  //     return tx.hash;
+  //   } catch (error: unknown) {
+  //     console.error("Error uploading data to blockchain:", error);
+  //     throw error;
+  //   } finally {
+  //     setIsUploading(false);
+  //   }
+  // };
+
+  const foo = async (latitude: number, longitude: number, timestamp: number, sessionDuration: number) => {
+    try {
+      setIsUploading(true);
+      const cid = await uploadToIPFS(latitude, longitude, timestamp, sessionDuration);
+
+      if (!cid) {
+        console.log("Couldn't get CID from IPFS");
+      };
+
+      const cid_contents = await generateZkProof(cid);
+      console.log(cid_contents);
+    } catch (error: unknown) {
+      console.log("Error in foo", error);
+    }
+  }
 
   const handleSubmit = async () => {
     if (!location) {
@@ -150,7 +209,7 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
 
       // Try to upload to blockchain
       try {
-        await uploadToBlockchain(
+        await foo(
           location.latitude,
           location.longitude,
           now.getTime(),
@@ -205,7 +264,7 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
               </div>
               <p className="text-center mb-2">Location acquired!</p>
               <p className="text-xs text-zinc-500 text-center mb-4">
-                {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
+                {location.latitude.toFixed(6)}, {location.longitude.toFixed(6) }
               </p>
               
               {isTracking ? (
