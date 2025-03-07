@@ -1,17 +1,17 @@
 'use client';
 
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Header from '../components/Header';
 import SessionOverview from '../components/SessionOverview';
 import Leaderboard from '../components/Leaderboard';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import ShitMap from '../components/ShitMap';
 
 export default function Dashboard() {
   const { ready, authenticated} = usePrivy();
-  const { wallets } = useWallets();
+//   const { wallets } = useWallets();
   const router = useRouter();
 
   useEffect(() => {
