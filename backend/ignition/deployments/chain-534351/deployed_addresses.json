@@ -1,3 +1,4 @@
 {
-  "PoopTrackerModule#PoopTracker": "0xAf6030F8362e9490469054d17AD629AF7F9F63c5"
+  "PoopTrackerModule#PoopTracker": "0xAf6030F8362e9490469054d17AD629AF7F9F63c5",
+  "Groth16Verifier#Groth16Verifier": "0x32bc1e753ebF0D3e922882Be2C5c6E77b367fAAe"
 }
