@@ -6,7 +6,6 @@ import { usePrivy } from '@privy-io/react-auth';
 export type ShitLog = {
   id: number;
   timestamp: Date;
-  notes?: string;
   location?: {
     latitude: number;
     longitude: number;
@@ -41,15 +40,13 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
         setLogs([
           {
             id: 42,
-            timestamp: new Date('2024-03-10T08:30:00'),
-            notes: "Morning victory! 🌅",
+            timestamp: new Date('2025-03-08T08:30:00'),
             location: { latitude: 3.043626, longitude: 101.584689 },
             status: 'confirmed'
           },
           {
             id: 41,
-            timestamp: new Date('2024-03-09T15:45:00'),
-            notes: "Coffee kicked in ☕",
+            timestamp: new Date('2025-03-07T15:45:00'),
             status: 'confirmed'
           },
         ]);

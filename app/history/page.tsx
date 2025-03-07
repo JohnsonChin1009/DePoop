@@ -127,9 +127,6 @@ export default function History() {
                     {formatDate(log.timestamp)}
                   </span>
                 </div>
-                {log.notes && (
-                  <p className="text-zinc-600 dark:text-zinc-400 mb-4">{log.notes}</p>
-                )}
                 {log.location && (
                   <a
                     href={`https://www.google.com/maps?q=${log.location.latitude},${log.location.longitude}`}

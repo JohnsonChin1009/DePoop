@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
             "type": "function"
         }
     ];
-    const contractAddress = "0x2cBa16cFE146Bf688Eb75cF6C8f21B522c5a853F";
+    const contractAddress = "0xAf6030F8362e9490469054d17AD629AF7F9F63c5";
 
     try {
         const data = await req.json();
