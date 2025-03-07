@@ -8,16 +8,16 @@ import { motion } from 'framer-motion';
 import Header from '../components/Header';
 import { useLogs } from '../contexts/LogContext';
 
-type ShitLog = {
-  id: number;
-  timestamp: Date;
-  notes?: string;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
-  status: 'pending' | 'confirmed';
-};
+// type ShitLog = {
+//   id: number;
+//   timestamp: Date;
+//   notes?: string;
+//   location?: {
+//     latitude: number;
+//     longitude: number;
+//   };
+//   status: 'pending' | 'confirmed';
+// };
 
 export default function History() {
   const { ready, authenticated } = usePrivy();

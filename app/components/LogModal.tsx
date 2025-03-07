@@ -25,9 +25,10 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
         });
         setLocation(position.coords);
         setUseLocation(true);
-      } catch (err) {
+      } catch (error: unknown) {
         setError('Failed to get location. Please try again.');
         setUseLocation(false);
+        console.log(error);
       }
     } else {
       setLocation(null);
@@ -45,8 +46,9 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated delay
       onClose();
       // TODO: Show success toast
-    } catch (err) {
+    } catch (error: unknown) {
       setError('Failed to log your shit. Please try again.');
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
