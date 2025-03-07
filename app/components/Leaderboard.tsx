@@ -1,91 +1,115 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaCrown, FaMedal } from 'react-icons/fa';
+import { FaTrophy, FaMedal, FaAward, FaSpinner } from 'react-icons/fa';
 
 type LeaderboardEntry = {
-  rank: number;
-  address: string;
-  username?: string;
-  totalShits: number;
+  user: string;
+  count: number;
 };
 
 export default function Leaderboard() {
-  const [timeframe, setTimeframe] = useState<'weekly' | 'monthly'>('weekly');
-  
-  // Mock data - replace with real data from blockchain
-  const mockData: LeaderboardEntry[] = [
-    { rank: 1, address: "0x1234...5678", username: "CryptoShitter", totalShits: 42 },
-    { rank: 2, address: "0x8765...4321", username: "ThroneMaster", totalShits: 38 },
-    { rank: 3, address: "0x9876...1234", username: "PoopChamp", totalShits: 35 },
-    // ... add more mock entries
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getRankIcon = (rank: number) => {
-    switch (rank) {
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/getUsersPoopCount', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          // Sort by count in descending order
+          const sortedData = [...data].sort((a, b) => b.count - a.count);
+          setLeaderboardData(sortedData);
+        } else {
+          setLeaderboardData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching leaderboard data:', error);
+        setLeaderboardData([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLeaderboardData();
+  }, []);
+
+  // Format wallet address
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  // Get medal for position
+  const getMedal = (position: number) => {
+    switch (position) {
+      case 0:
+        return <FaTrophy className="text-yellow-500" />;
       case 1:
-        return <FaCrown className="text-yellow-500" size={20} />;
+        return <FaMedal className="text-gray-400" />;
       case 2:
-        return <FaMedal className="text-gray-400" size={20} />;
-      case 3:
-        return <FaMedal className="text-amber-600" size={20} />;
+        return <FaMedal className="text-amber-700" />;
       default:
-        return <span className="font-bold">{rank}</span>;
+        return <FaAward className="text-zinc-500" />;
     }
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Leaderboard</h2>
-        <div className="flex gap-2 bg-zinc-100 dark:bg-zinc-700 p-1 rounded-full">
-          {(['weekly', 'monthly'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setTimeframe(tab)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                ${timeframe === tab 
-                  ? 'bg-white dark:bg-zinc-600 text-amber-600 dark:text-amber-400' 
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400'
-                }`}
+    <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-lg overflow-hidden">
+      <div className="p-4 border-b border-zinc-200 dark:border-zinc-700">
+        <h2 className="text-xl font-bold">Global Leaderboard</h2>
+      </div>
+      
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="flex flex-col items-center">
+            <FaSpinner className="animate-spin text-amber-600 text-2xl mb-2" />
+            <p>Loading leaderboard...</p>
+          </div>
+        </div>
+      ) : leaderboardData.length === 0 ? (
+        <div className="flex justify-center items-center h-64">
+          <p className="text-zinc-500 dark:text-zinc-400">No data available yet.</p>
+        </div>
+      ) : (
+        <div className="divide-y divide-zinc-200 dark:divide-zinc-700">
+          {leaderboardData.map((entry, index) => (
+            <motion.div
+              key={entry.user}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className={`flex items-center p-4 ${index < 3 ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}`}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
+              <div className="w-8 flex justify-center">
+                <span className="font-bold text-zinc-500">{index + 1}</span>
+              </div>
+              
+              <div className="w-8 flex justify-center mx-2">
+                {getMedal(index)}
+              </div>
+              
+              <div className="flex-grow">
+                <p className="font-medium">{formatAddress(entry.user)}</p>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-amber-600 font-bold">{entry.count}</span>
+                <span className="text-xs text-zinc-500">shits</span>
+              </div>
+            </motion.div>
           ))}
         </div>
-      </div>
-
-      <div className="space-y-4">
-        {mockData.map((entry) => (
-          <motion.div
-            key={entry.address}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex items-center justify-between p-4 rounded-lg
-              ${entry.rank <= 3 
-                ? 'bg-amber-50 dark:bg-amber-900/20' 
-                : 'bg-zinc-50 dark:bg-zinc-700/30'
-              }`}
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-8 flex justify-center">
-                {getRankIcon(entry.rank)}
-              </div>
-              <div>
-                <p className="font-medium">{entry.username}</p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {entry.address}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold">{entry.totalShits}</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">shits</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      )}
     </div>
   );
 } 
