@@ -22,6 +22,12 @@ DePoop leverages on-chain transactions and zero-knowledge proofs (ZK) for privat
 
 ### Contract Deployed on Scroll
 
+PoopCoin
+
+```
+0x35E6381A235896C38E1E3719B453C287d5486575
+```
+
 PoopTracker
 
 ```
@@ -40,26 +46,6 @@ ZK
 https://thegraph.com/studio/subgraph/depoop
 ```
 
-<<<<<<< HEAD
 ```
 https://testnet.thegraph.com/explorer/subgraphs/G5aVpre6AQcUx5EHbRoccSQZQVdc143GxcPJKP8zX4uS?view=Query&chain=arbitrum-sepolia
 ```
-=======
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-0xAf6030F8362e9490469054d17AD629AF7F9F63c5
-
-ZK Proof Contract Address
-0x3664fe20a3DD061b8f95C2A9D3b984Ee027c0c6C
->>>>>>> bb2911b (feat: added ZK contract)
