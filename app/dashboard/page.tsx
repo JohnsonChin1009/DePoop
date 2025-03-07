@@ -24,44 +24,44 @@ export default function Dashboard() {
     return null;
   }
 
-  const handleUploadOnChain = async () => {
-    try {
-      console.log("Wallets Available: ", wallets);
+//   const handleUploadOnChain = async (longitude: number, latitude: number, timestamp: number, sessionDuration: number) => {
+//     try {
+//       console.log("Wallets Available: ", wallets);
 
-      const userWallet = wallets[0];
+//       const userWallet = wallets[0];
 
-      if (!userWallet) {
-        throw new Error("No wallet found");
-      }
-      const provider = new ethers.BrowserProvider(await userWallet.getEthereumProvider());
-      const signer = await provider.getSigner();
+//       if (!userWallet) {
+//         throw new Error("No wallet found");
+//       }
+//       const provider = new ethers.BrowserProvider(await userWallet.getEthereumProvider());
+//       const signer = await provider.getSigner();
 
-      const contractAbi = [
-        {
-          "inputs": [
-            { "internalType": "int32", "name": "_latitude", "type": "int32" },
-            { "internalType": "int32", "name": "_longitude", "type": "int32" },
-            { "internalType": "uint32", "name": "_timestamp", "type": "uint32" },
-            { "internalType": "uint16", "name": "_sessionDuration", "type": "uint16" }
-          ],
-          "name": "logPoopEvent",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ];
+//       const contractAbi = [
+//         {
+//           "inputs": [
+//             { "internalType": "int32", "name": "_latitude", "type": "int32" },
+//             { "internalType": "int32", "name": "_longitude", "type": "int32" },
+//             { "internalType": "uint32", "name": "_timestamp", "type": "uint32" },
+//             { "internalType": "uint16", "name": "_sessionDuration", "type": "uint16" }
+//           ],
+//           "name": "logPoopEvent",
+//           "outputs": [],
+//           "stateMutability": "nonpayable",
+//           "type": "function"
+//         }
+//       ];
   
-      const contractAddress = "0x2cBa16cFE146Bf688Eb75cF6C8f21B522c5a853F";
-      const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+//       const contractAddress = "0xAf6030F8362e9490469054d17AD629AF7F9F63c5";
+//       const contract = new ethers.Contract(contractAddress, contractAbi, signer);
   
-      const tx = await contract.logPoopEvent(1, 1, 1709505600, 130);
-      await tx.wait();
+//       const tx = await contract.logPoopEvent(latitude, longitude, timestamp, sessionDuration);
+//       await tx.wait();
   
-      console.log("Transaction Successful", tx.hash);
-    } catch (error: unknown) {
-      console.error("Error uploading data:", error);
-    }
-  };
+//       console.log("Transaction Successful", tx.hash);
+//     } catch (error: unknown) {
+//       console.error("Error uploading data:", error);
+//     }
+//   };
   
 
   return (
@@ -75,9 +75,9 @@ export default function Dashboard() {
             <div>
             <h2 className="text-2xl font-bold mb-4">Your Stats</h2>
             <SessionOverview />
-            <button onClick={handleUploadOnChain} className="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer">
+            {/* <button onClick={handleUploadOnChain} className="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer">
               Upload Data on Chain
-            </button>
+            </button> */}
             </div>
           
           <div>
