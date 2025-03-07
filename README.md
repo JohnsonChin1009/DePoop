@@ -35,4 +35,22 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+## Contract Deployed on Scroll
+
+PoopTracker
+
+```
 0xAf6030F8362e9490469054d17AD629AF7F9F63c5
+```
+
+ZK
+
+```
+0x3664fe20a3DD061b8f95C2A9D3b984Ee027c0c6C
+```
+
+## Subgraph link
+
+```
+https://testnet.thegraph.com/explorer/subgraphs/G5aVpre6AQcUx5EHbRoccSQZQVdc143GxcPJKP8zX4uS?view=Query&chain=arbitrum-sepolia
+```
