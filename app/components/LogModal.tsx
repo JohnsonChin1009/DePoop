@@ -27,6 +27,9 @@ type LogModalProps = {
   onClose: () => void;
 };
 
+// Add minimum duration constant at the top
+const MIN_DURATION_SECONDS = 120; // 2 minutes
+
 export default function LogModal({ isOpen, onClose }: LogModalProps) {
   const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -308,6 +311,12 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
       return;
     }
     
+    // Check if session is at least 2 minutes
+    if (timer < MIN_DURATION_SECONDS) {
+      setError(`Sessions must be at least 2 minutes. You've only been here for ${formatTime(timer)}.`);
+      return;
+    }
+    
     setIsLoading(true);
     setError(null);
 
@@ -320,7 +329,8 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
         location: {
           latitude: location.latitude,
           longitude: location.longitude
-        }
+        },
+        duration: timer
       };
 
       // Try to upload to blockchain
@@ -388,14 +398,23 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
                   <div className="text-center mb-4">
                     <p className="text-sm text-zinc-600 dark:text-zinc-400">Time elapsed</p>
                     <p className="text-3xl font-mono">{formatTime(timer)}</p>
+                    {timer < MIN_DURATION_SECONDS && (
+                      <p className="text-xs text-amber-600 mt-1">
+                        {`Minimum session: ${formatTime(MIN_DURATION_SECONDS)} (${Math.ceil((MIN_DURATION_SECONDS - timer) / 60)} min remaining)`}
+                      </p>
+                    )}
                   </div>
                   
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSubmit}
-                    disabled={isLoading || isUploading}
-                    className="w-full p-3 bg-amber-600 text-white rounded-lg font-medium"
+                    disabled={isLoading || isUploading || timer < MIN_DURATION_SECONDS}
+                    className={`w-full p-3 rounded-lg font-medium ${
+                      timer < MIN_DURATION_SECONDS 
+                        ? 'bg-zinc-300 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 cursor-not-allowed' 
+                        : 'bg-amber-600 text-white'
+                    }`}
                   >
                     {isLoading || isUploading ? 
                       (isUploading ? 'Uploading to Blockchain...' : 'Logging...') : 
@@ -403,14 +422,19 @@ export default function LogModal({ isOpen, onClose }: LogModalProps) {
                   </motion.button>
                 </div>
               ) : (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={startTracking}
-                  className="w-full p-3 bg-amber-600 text-white rounded-lg font-medium"
-                >
-                  Start Tracking
-                </motion.button>
+                <>
+                  <p className="text-sm text-center mb-4 text-zinc-600 dark:text-zinc-400">
+                    Sessions must be at least 2 minutes long to be logged.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={startTracking}
+                    className="w-full p-3 bg-amber-600 text-white rounded-lg font-medium"
+                  >
+                    Start Tracking
+                  </motion.button>
+                </>
               )}
             </>
           ) : (
