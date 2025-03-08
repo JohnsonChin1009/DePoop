@@ -16,8 +16,9 @@ export async function POST(request: NextRequest) {
     // Upload the file to Pinata
     const uploadData = await pinata.upload.file(file);
     const url = await pinata.gateways.convert(uploadData.IpfsHash);
-
-    return NextResponse.json({ url }, { status: 200 });
+    
+    console.log("URL received", url);
+    return NextResponse.json({  url }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
