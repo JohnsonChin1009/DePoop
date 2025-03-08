@@ -5,18 +5,19 @@ export default function TestButton() {
     const contractAbi = [
         {
             "inputs": [
-                { "internalType": "int32", "name": "_latitude", "type": "int32" },
-                { "internalType": "int32", "name": "_longitude", "type": "int32" },
-                { "internalType": "uint32", "name": "_timestamp", "type": "uint32" },
-                { "internalType": "uint16", "name": "_sessionDuration", "type": "uint16" }
+              {"internalType": "bytes32", "name": "_cidHash", "type": "bytes32"},
+              {"internalType": "uint256[2]", "name": "_pA", "type": "uint256[2]"},
+              {"internalType": "uint256[2][2]", "name": "_pB", "type": "uint256[2][2]"},
+              {"internalType": "uint256[2]","name": "_pC","type": "uint256[2]"},
+              {"internalType": "uint256[1]","name": "_pubSignals","type": "uint256[1]"}
             ],
             "name": "logPoopEvent",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
-        }
+          }
     ];
-    const contractAddress = "0xde8d9614aFc5880B6d565372250aEF3bbAe3bB94";
+    const contractAddress = "0xbECe4aF67a276A594c36Ddd06D8d89c5D15B0b35g";
 
     async function uploadData() {
         try {
