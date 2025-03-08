@@ -1,0 +1,26 @@
+specVersion: 1.2.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: PoopTracker
+    network: scroll-sepolia
+    source:
+      address: "0xbECe4aF67a276A594c36Ddd06D8d89c5D15B0b35"
+      abi: PoopTracker
+      startBlock: 8427671
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - PoopEventLogged
+      abis:
+        - name: PoopTracker
+          file: ./abis/PoopTracker.json
+      eventHandlers:
+        - event: PoopEventLogged(indexed address,indexed bytes32)
+          handler: handlePoopEventLogged
+      file: ./src/poop-tracker.ts

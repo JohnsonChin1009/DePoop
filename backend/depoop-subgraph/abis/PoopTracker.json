@@ -1,0 +1,79 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_verifierAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "cidHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "PoopEventLogged",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "_cidHash", "type": "bytes32" },
+      { "internalType": "uint256[2]", "name": "_pA", "type": "uint256[2]" },
+      {
+        "internalType": "uint256[2][2]",
+        "name": "_pB",
+        "type": "uint256[2][2]"
+      },
+      { "internalType": "uint256[2]", "name": "_pC", "type": "uint256[2]" },
+      {
+        "internalType": "uint256[1]",
+        "name": "_pubSignals",
+        "type": "uint256[1]"
+      }
+    ],
+    "name": "logPoopEvent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "userPoopEvents",
+    "outputs": [
+      { "internalType": "address", "name": "userAddress", "type": "address" },
+      { "internalType": "bytes32", "name": "cidHash", "type": "bytes32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "verifierContract",
+    "outputs": [
+      {
+        "internalType": "contract Groth16Verifier",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

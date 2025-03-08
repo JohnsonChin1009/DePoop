@@ -1,0 +1,8 @@
+{
+  "scroll-sepolia": {
+    "PoopTracker": {
+      "address": "0xbECe4aF67a276A594c36Ddd06D8d89c5D15B0b35",
+      "startBlock": 8427671
+    }
+  }
+}
